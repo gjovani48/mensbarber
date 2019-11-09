@@ -1,1 +1,32 @@
-/* You can add global styles to this file, and also import other style files */
+.content-container{
+    margin-top: 80px;
+}
+
+.bg-amber{
+	background-color: #f44336;
+}
+
+.invalid{
+    color: red;
+}
+
+.booknow{
+    margin-top: 100px;
+}
+
+.loginBtn{
+    background-color: #f44336;
+    transition: .5s ease;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: white;
+    border: none;
+}
+
+.loginBtn:hover:hover{
+    background-color: gray;
+    transition: .5s ease;
+    border: none;
+}

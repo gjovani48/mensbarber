@@ -1,0 +1,84 @@
+
+
+<div class="row">
+    <div class="col-xl-6 border-right mt-3">
+        <p>You can also sign in with:</p>
+        <button id="fbLoginBtn" type="button" mdbBtn color="primary" class="waves-light btn-sm btn-block" mdbWavesEffect><i class="fab fa-facebook-f left"></i>Facebook</button>
+        <button id="googleLoginBtn" type="button" mdbBtn gradient="peach" class="waves-light btn-sm btn-block mt-3" mdbWavesEffect><i class="fab fa-google left"></i>Google</button>
+    </div>
+    
+    
+
+    <div class="col-xl-6">
+        <form (submit)="login()" #loginForm="ngForm">
+            <div class="md-form">
+                <input mdbInput type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]*" #email="ngModel" [(ngModel)]="userEmail"  name="userEmail" class="form-control" [class.invalid]="email.invalid && email.touched" required>
+                <span *ngIf="email.invalid && email.touched" class="text-danger">Invalid Email</span><label for="userEmail">Email</label>
+            </div>
+            <div class="md-form">
+                    <input mdbInput type="password" #password="ngModel" [(ngModel)]="userPassword" name="userPassword" class="form-control" [class.invalid]="password.invalid && password.touched" required>
+                    <span *ngIf="password.invalid && password.touched" class="text-danger">Invalid Password</span><label for="userPassword">Password</label>
+            </div>
+        
+            <button id="loginBtn" class="btn btn-block btn-sm bg-amber text-light" type="submit" [disabled]="loginForm.invalid">Login</button>
+            <div class="row mt-2">
+                <div class="col-xl-6"><a type="button" class="text-primary">Forgot Password?</a></div>
+                <div class="col-xl-6"><a type="button" (click)="createAccount = true" class="float-right text-primary">Create Account</a></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row" *ngIf="createAccount">
+    <form (submit)="addClient()" #registrationForm="ngForm" class="col-xl-12">
+        <div class="row">
+            <div class="col-xl-9 card shadow mx-auto mt-5">
+                <div class="row card-header bg-amber">
+                    <div class="col-xl-6"><h5>Create New Account</h5></div>
+                    <div class="col-xl-6 float-right">
+                        <button type="button" class="close text-dark" (click)="createAccount = false;" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <hr class="m-0 p-0">
+                <div class="md-form">
+                    <input mdbInput type="text" pattern="[A-Za-z\s.]*" #newuserfirstname="ngModel" [(ngModel)]="registerFirstname"  name="registerFirstname" class="form-control" [class.invalid]="newuserfirstname.invalid && newuserfirstname.touched" required>
+                    <span *ngIf="newuserfirstname.invalid && newuserfirstname.touched" class="text-danger">Invalid Input</span><label for="newuserfirstname">Firstname</label>
+                </div>
+                <div class="md-form">
+                    <input mdbInput type="text" pattern="[A-Za-z\s.]*" #newusermiddlename="ngModel" [(ngModel)]="registerMiddlename"  name="registerMiddlename" class="form-control" [class.invalid]="newusermiddlename.invalid && newusermiddlename.touched" required>
+                    <span *ngIf="newusermiddlename.invalid && newusermiddlename.touched" class="text-danger">Invalid Input</span><label for="newusermiddlename">Middlename</label>
+                </div>
+                <div class="md-form">
+                    <input mdbInput type="text" pattern="[A-Za-z\s.]*" #newuserlastname="ngModel" [(ngModel)]="registerLastname"  name="registerLastname" class="form-control" [class.invalid]="newuserlastname.invalid && newuserlastname.touched" required>
+                    <span *ngIf="newuserlastname.invalid && newuserlastname.touched" class="text-danger">Invalid Input</span><label for="newuserlastname">Lastname</label>
+                </div>
+
+                <div class="md-form">
+                    <input mdbInput type="text" pattern="[0-9]*" #newuserphone="ngModel" [(ngModel)]="registerPhone"  name="registerPhone" class="form-control" [class.invalid]="newuserphone.invalid && newuserphone.touched" required>
+                    <span *ngIf="newuserphone.invalid && newuserphone.touched" class="text-danger">Invalid Phone Number</span><label for="newuserphone">Phone</label>
+                </div>
+                <div class="md-form">
+                    <input mdbInput type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]*" #newuseremail="ngModel" [(ngModel)]="registerEmail"  name="registerEmail" class="form-control" [class.invalid]="newuseremail.invalid && newuseremail.touched" required>
+                    <span *ngIf="newuseremail.invalid && newuseremail.touched" class="text-danger">Invalid Email</span><label for="newuseremail">Email</label>
+                </div>
+                <div class="md-form">
+                    <input mdbInput type="password" #newuserpassword="ngModel" [(ngModel)]="registerPassword"  name="registerPassword" class="form-control" [class.invalid]="newuserpassword.invalid && newuserpassword.touched" required>
+                    <span *ngIf="newuserpassword.invalid && newuserpassword.touched" class="text-danger">Invalid Format</span><label for="newuserpassword">Password</label>
+                </div>
+                <div class="md-form">
+                        <input mdbInput type="password" #verifypassword="ngModel" [(ngModel)]="verifyregpassword"  name="verifyregpassword" class="form-control" [class.invalid]="verifypassword.invalid && verifypassword.touched" required>
+                        <span *ngIf="verifypassword.invalid && verifypassword.touched" class="text-danger">Invalid Format</span>
+                        <span *ngIf="registerPassword != verifyregpassword && verifypassword.touched" class="text-danger">Passwords do not match</span>
+                        <label for="verifyregpassword">Confirm Password</label>
+                    </div>
+                <div class="md-form">
+                    <button id="registerBtn" class="btn btn-block btn-sm bg-amber text-light" type="submit" [disabled]="registrationForm.invalid">Register</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
