@@ -8,7 +8,10 @@ import { Observable } from 'rxjs'
 })
 export class ReservationService {
 
-  private url:string = "http://localhost:80"
+  //private url:string = "http://localhost:80"
+  
+  private url:string = "https://menbarbers.herokuapp.com"
+  
   private headers = new HttpHeaders().set('Content-Type', 'application/json')
 
   constructor(private http: HttpClient) { }
