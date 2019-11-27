@@ -9,7 +9,10 @@ import { Observable } from 'rxjs'
 
 export class StyleService {
 
-  private url:string = "http://localhost:80"
+  //private url:string = "http://localhost:80"
+  
+  private url:string = "https://menbarbers.herokuapp.com"
+  
   private headers = new HttpHeaders().set('Content-Type', 'application/json')
 
 	constructor(
