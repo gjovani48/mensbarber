@@ -4,4 +4,5 @@ export class Style {
     description: String
     price: Number
     image: String
+    count: Number
 }

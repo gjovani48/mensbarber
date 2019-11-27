@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core'
 import { Style } from '../models/style'
+import { User } from '../models/user'
 import { StyleService } from '../services/style.service'
 import { Reservation } from '../models/reservation'
 import { ReservationService } from '../services/reservation.service'
-import { ClientService } from '../services/client.service'
-import { Client } from '../models/client'
+import { UserService } from '../services/user.service'
 
 @Component({
   selector: 'app-home',
@@ -16,17 +16,20 @@ export class HomeComponent implements OnInit {
   private bookingdate
   private bookingtime
 
-  private client
+  private user = new User()
 
   private styles: Style[]
   private trendingstyles: Style[]
 
+
+  public reservationTime = [];
+
   private style = new Style()
-  
+
   constructor(
     private styleService: StyleService,
     private reservationService: ReservationService,
-    private clientService: ClientService,
+    private userService: UserService,
   ) { }
 
   ngOnInit() {
@@ -56,21 +59,30 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  test(){
-    alert("change date")
-  }
-
   submitBooking(){
     const reservation = new Reservation()
     this.bookingdate = this.bookingdate + ", " + this.bookingtime
     reservation.reservation_date = this.bookingdate
-    this.client = this.clientService.getClient()
-    reservation.client_id =  this.client._id
+
+    var id = localStorage.getItem('token');
+
+    reservation.client_id =  id.slice(0,24)
     reservation.style_id = this.style._id
     reservation.total = this.style.price
-    reservation.payment_status = "Paid"
+    reservation.status = "Reserved"
     this.reservationService.addReservation(reservation).subscribe((response) => {
-      alert("Booking Successful")
+      if(response.msg == 'success'){
+          this.reservationService.addCountToStyle(reservation).subscribe((response)=>{
+        })
+      }
+
+    })
+  }
+
+  getReservationDate(){
+    this.bookingdate = this.bookingdate;
+    this.reservationService.getReservationDate(this.bookingdate).subscribe((response) => {
+        this.reservationTime = response;
     })
   }
 }

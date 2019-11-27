@@ -4,133 +4,103 @@
 		<mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark" class="fixed-top bg-amber" [containerInside]="false">
 
 			<!-- Navbar brand -->
-			<mdb-navbar-brand><a class="navbar-brand" routerLink="/home"><img src="assets/image/logo.png" height="50"></a></mdb-navbar-brand>
-		
-			<links>
-				<ul class="navbar-nav mr-auto ">
+			<mdb-navbar-brand><a class="navbar-brand animated bounce infinite" routerLink="/home"><img src="assets/image/logo.png" height="50"></a></mdb-navbar-brand>
+
+			<links *ngIf="loggedIn; else guestBlock">
+
+				<ul class="navbar-nav mr-auto" *ngIf="user.role == 'client'; else adminBlock">
 					<li class="nav-item py-1">
 						<a routerLink="/home" class="text-decoration-none pr-4 linkHover" routerLinkActive="linkActive">Home</a>
 					</li>
 					<li class="nav-item py-1">
 						<a routerLink="/styles" class="text-decoration-none pr-4 linkHover" routerLinkActive="linkActive">Styles</a>
 					</li>
-					<li class="nav-item py-1">
-						<a routerLink="/reservations" class="text-decoration-none pr-4 linkHover" routerLinkActive="linkActive">Reservations</a>
-					</li>	
 				</ul>
 
-				
-				<ul class="navbar-nav ml-auto nav-flex-icons">
-					<li class="nav-item" *ngIf="loggedIn; else loggedOut">
-						<a class="nav-link">
-						{{ client.firstname }} {{ client.lastname }}
-						</a>
-					</li>
-					<ng-template #loggedOut>
-						<li class="nav-item">
-							<a class="loginBtn text-decoration-none" (click)="loginModal.show()">Login</a>
+				<ng-template #adminBlock>
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item py-1">
+							<a routerLink="/dashboard" class="text-decoration-none pr-4 linkHover" routerLinkActive="linkActive">Dashboard</a>
 						</li>
-					</ng-template>
+						<li class="nav-item py-1">
+							<a routerLink="/users" class="text-decoration-none pr-4 linkHover" routerLinkActive="linkActive">Clients</a>
+						</li>
+						<li class="nav-item py-1">
+							<a routerLink="/reservations" class="text-decoration-none pr-4 linkHover" routerLinkActive="linkActive">Haircuts</a>
+						</li>
+					</ul>
+				</ng-template>
+
+				<ul class="navbar-nav ml-auto nav-flex-icons mr-4">
+					<li class="nav-item dropdown" dropdown>
+						<a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+							{{ user.firstname }} {{ user.lastname }}<span class="caret"></span></a>
+						<div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
+							<a routerLink="/account" class="dropdown-item waves-light text-decoration-none">Account Settings</a>
+							<a type="button" class="dropdown-item waves-light text-decoration-none" (click)="logOut()">Logout</a>
+						</div>
+					</li>
 				</ul>
-		</links>
-		<!-- Collapsible content -->
-	  
-	  </mdb-navbar>
+			</links>
+
+			<ng-template #guestBlock>
+				<links>
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item py-1">
+							<a routerLink="/home" class="text-decoration-none pr-4 linkHover" routerLinkActive="linkActive">Home</a>
+						</li>
+						<li class="nav-item py-1">
+							<a routerLink="/styles" class="text-decoration-none pr-4 linkHover" routerLinkActive="linkActive">Styles</a>
+						</li>
+					</ul>
+
+					<ul class="navbar-nav ml-auto nav-flex-icons mr-4">
+						<li class="nav-item">
+							<a class="text-decoration-none" (click)="loginModal.show()"><span class="loginBtn">Login</span></a>
+						</li>
+					</ul>
+				</links>
+			</ng-template>
+	  	</mdb-navbar>
 	</div>
 <router-outlet></router-outlet>
-
 </div>
 
-<div style="overflow-y: auto" mdbModal #loginModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLoginLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header bg-amber">
-					<h5 class="modal-title" id="logInModalLabel">Log In</h5>
-					<button type="button" class="close text-dark" (click)="loginModal.hide()" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-		
-				<div class="modal-body p-5">
-				
-					<div class="row">
-						<div class="col-xl-6 border-right mt-3">
-							<p>You can also sign in with:</p>
-							<button id="fbLoginBtn" type="button" mdbBtn color="primary" class="waves-light btn-sm btn-block" mdbWavesEffect><i class="fab fa-facebook-f left"></i>Facebook</button>
-							<button id="googleLoginBtn" type="button" mdbBtn gradient="peach" class="waves-light btn-sm btn-block mt-3" mdbWavesEffect><i class="fab fa-google left"></i>Google</button>
-						</div>
-						
-						
-					
-						<div class="col-xl-6">
-							<form (submit)="login()" #loginForm="ngForm">
-								<div class="md-form">
-									<input mdbInput type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]*" #email="ngModel" [(ngModel)]="userEmail"  name="userEmail" class="form-control" [class.invalid]="email.invalid && email.touched" required>
-									<span *ngIf="email.invalid && email.touched" class="text-danger">Invalid Email</span><label for="userEmail">Email</label>
-								</div>
-								<div class="md-form">
-										<input mdbInput type="password" #password="ngModel" [(ngModel)]="userPassword" name="userPassword" class="form-control" [class.invalid]="password.invalid && password.touched" required>
-										<span *ngIf="password.invalid && password.touched" class="text-danger">Invalid Password</span><label for="userPassword">Password</label>
-								</div>
-							
-								<button id="loginBtn" class="btn btn-block btn-sm bg-amber text-light" type="submit" [disabled]="loginForm.invalid">Login</button>
-								<div class="row mt-2">
-									<div class="col-xl-6"><a type="button" class="text-primary">Forgot Password?</a></div>
-									<div class="col-xl-6"><a type="button" (click)="createAccount = true" class="float-right text-primary">Create Account</a></div>
-								</div>
-							</form>
-						</div>
+<!-- Log in Modal -->
+<div mdbModal style="overflow-y: auto" #loginModal="mdbModal" class="modal fade top bg-unique" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg cascading-modal modal-avatar" role="document">
+		<div class="modal-content bg-unique-dark">
+			<div class="modal-header">
+				<img src="assets/image/Medium Length Haircut + Mid Fade.jpg" class="rounded-circle img-responsive animated zoomIn">
+				<h3 class="text-light">Login</h3>
+			</div>
+
+			<div class="modal-body p-5 bg-unique-dark text-light">
+
+				<div class="row">
+					<div class="col-xl-6 border-right mt-3">
+						<p>You can also sign in with:</p>
+						<button id="fbLoginBtn" type="button" mdbBtn color="primary" class="waves-light btn-sm btn-block" mdbWavesEffect><i class="fab fa-facebook-f left"></i>Facebook</button>
+						<button id="googleLoginBtn" type="button" mdbBtn gradient="peach" class="waves-light btn-sm btn-block mt-3" mdbWavesEffect><i class="fab fa-google left"></i>Google</button>
 					</div>
-					
-					<div class="row" *ngIf="createAccount">
-						<form (submit)="addClient()" #registrationForm="ngForm" class="col-xl-12">
-							<div class="row">
-								<div class="col-xl-9 card shadow mx-auto mt-5">
-									<div class="row card-header bg-amber">
-										<div class="col-xl-6"><h5>Create New Account</h5></div>
-										<div class="col-xl-6 float-right">
-											<button type="button" class="close text-dark" (click)="createAccount = false;" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-											</button>
-										</div>
-									</div>
-									
-									<hr class="m-0 p-0">
-									<div class="md-form">
-										<input mdbInput type="text" pattern="[A-Za-z\s.]*" #newuserfirstname="ngModel" [(ngModel)]="registerFirstname"  name="registerFirstname" class="form-control" [class.invalid]="newuserfirstname.invalid && newuserfirstname.touched" required>
-										<span *ngIf="newuserfirstname.invalid && newuserfirstname.touched" class="text-danger">Invalid Input</span><label for="newuserfirstname">Firstname</label>
-									</div>
-									<div class="md-form">
-										<input mdbInput type="text" pattern="[A-Za-z\s.]*" #newusermiddlename="ngModel" [(ngModel)]="registerMiddlename"  name="registerMiddlename" class="form-control" [class.invalid]="newusermiddlename.invalid && newusermiddlename.touched" required>
-										<span *ngIf="newusermiddlename.invalid && newusermiddlename.touched" class="text-danger">Invalid Input</span><label for="newusermiddlename">Middlename</label>
-									</div>
-									<div class="md-form">
-										<input mdbInput type="text" pattern="[A-Za-z\s.]*" #newuserlastname="ngModel" [(ngModel)]="registerLastname"  name="registerLastname" class="form-control" [class.invalid]="newuserlastname.invalid && newuserlastname.touched" required>
-										<span *ngIf="newuserlastname.invalid && newuserlastname.touched" class="text-danger">Invalid Input</span><label for="newuserlastname">Lastname</label>
-									</div>
-					
-									<div class="md-form">
-										<input mdbInput type="text" pattern="[0-9]*" #newuserphone="ngModel" [(ngModel)]="registerPhone"  name="registerPhone" class="form-control" [class.invalid]="newuserphone.invalid && newuserphone.touched" required>
-										<span *ngIf="newuserphone.invalid && newuserphone.touched" class="text-danger">Invalid Phone Number</span><label for="newuserphone">Phone</label>
-									</div>
-									<div class="md-form">
-										<input mdbInput type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]*" #newuseremail="ngModel" [(ngModel)]="registerEmail"  name="registerEmail" class="form-control" [class.invalid]="newuseremail.invalid && newuseremail.touched" required>
-										<span *ngIf="newuseremail.invalid && newuseremail.touched" class="text-danger">Invalid Email</span><label for="newuseremail">Email</label>
-									</div>
-									<div class="md-form">
-										<input mdbInput type="password" #newuserpassword="ngModel" [(ngModel)]="registerPassword"  name="registerPassword" class="form-control" [class.invalid]="newuserpassword.invalid && newuserpassword.touched" required>
-										<span *ngIf="newuserpassword.invalid && newuserpassword.touched" class="text-danger">Invalid Format</span><label for="newuserpassword">Password</label>
-									</div>
-									<div class="md-form">
-											<input mdbInput type="password" #verifypassword="ngModel" [(ngModel)]="verifyregpassword"  name="verifyregpassword" class="form-control" [class.invalid]="verifypassword.invalid && verifypassword.touched" required>
-											<span *ngIf="verifypassword.invalid && verifypassword.touched" class="text-danger">Invalid Format</span>
-											<span *ngIf="registerPassword != verifyregpassword && verifypassword.touched" class="text-danger">Passwords do not match</span>
-											<label for="verifyregpassword">Confirm Password</label>
-										</div>
-									<div class="md-form">
-										<button id="registerBtn" class="btn btn-block btn-sm bg-amber text-light" type="submit" [disabled]="registrationForm.invalid">Register</button>
-									</div>
-								</div>
+
+					<div class="col-xl-6">
+						<form (submit)="login()" #loginForm="ngForm">
+							<div class="md-form">
+								<mdb-icon far icon="envelope animated zoomIn" ></mdb-icon>
+								<input mdbInput type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]*" #email="ngModel" [(ngModel)]="userEmail"  name="userEmail" class="form-control text-light" [class.invalid]="email.invalid && email.touched" maxlength="30" required>
+								<span *ngIf="email.invalid && email.touched" class="text-danger">Invalid Email</span><label for="userEmail">Email</label>
+							</div>
+							<div class="md-form">
+									<mdb-icon fas icon="key animated zoomIn"></mdb-icon>
+									<input mdbInput type="password" #password="ngModel" [(ngModel)]="userPassword" name="userPassword" class="form-control text-light" [class.invalid]="password.invalid && password.touched" maxlength="20" required>
+									<span *ngIf="password.invalid && password.touched" class="text-danger">Invalid Password</span><label for="userPassword">Password</label>
+							</div>
+
+							<button id="loginBtn" class="btn btn-block btn-sm bg-amber text-light" type="submit" [disabled]="loginForm.invalid">Login</button>
+							<div class="row mt-2">
+								<div class="col-xl-6"><a type="button" class="text-primary">Forgot Password?</a></div>
+								<div class="col-xl-6"><a type="button" (click)="loginModal.hide(); registerModal.show()" class="float-right text-primary">Create Account</a></div>
 							</div>
 						</form>
 					</div>
@@ -138,12 +108,129 @@
 			</div>
 		</div>
 	</div>
+</div>
 
 
 
-<footer class="p-5 bg-amber">
-	
+
+
+<!-- Register Modal -->
+<div style="overflow-y: auto" mdbModal #registerModal="mdbModal" class="modal fade bottom bg-unique" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg cascading-modal modal-avatar" role="document">
+		<div class="modal-content bg-unique-dark">
+			<div class="modal-header">
+				<img src="assets/image/Medium Length Haircut + Mid Fade.jpg" class="rounded-circle img-responsive animated zoomIn">
+				<h3 class="text-light">Register</h3>
+			</div>
+
+			<div class="modal-body px-5 bg-unique-dark text-light">
+				<div class="row">
+					<form (submit)="addUser()" #registrationForm="ngForm" class="col-xl-12 text-light">
+						<div class="row">
+							<div class="col-xl-12 mx-auto">
+								<div class="md-form">
+									<mdb-icon fas icon="user animated zoomIn"></mdb-icon>
+									<input mdbInput type="text" pattern="[A-Za-z\s.]*" #newuserfirstname="ngModel" [(ngModel)]="registerFirstname"  name="registerFirstname" class="form-control text-light" [class.invalid]="newuserfirstname.invalid && newuserfirstname.touched" maxlength="50" required>
+									<span *ngIf="newuserfirstname.invalid && newuserfirstname.touched" class="text-danger">Invalid format</span><label for="newuserfirstname">Firstname</label>
+								</div>
+								<div class="md-form">
+									<mdb-icon fas icon="user  animated zoomIn"></mdb-icon>
+									<input mdbInput type="text" pattern="[A-Za-z\s.]*" #newusermiddlename="ngModel" [(ngModel)]="registerMiddlename"  name="registerMiddlename" class="form-control text-light" [class.invalid]="newusermiddlename.invalid && newusermiddlename.touched" maxlength="50" required>
+									<span *ngIf="newusermiddlename.invalid && newusermiddlename.touched" class="text-danger">Invalid format</span><label for="newusermiddlename">Middlename</label>
+								</div>
+								<div class="md-form">
+									<mdb-icon fas icon="user  animated zoomIn"></mdb-icon>
+									<input mdbInput type="text" pattern="[A-Za-z\s.]*" #newuserlastname="ngModel" [(ngModel)]="registerLastname"  name="registerLastname" class="form-control text-light" [class.invalid]="newuserlastname.invalid && newuserlastname.touched" maxlength="50" required>
+									<span *ngIf="newuserlastname.invalid && newuserlastname.touched" class="text-danger">Invalid format</span><label for="newuserlastname">Lastname</label>
+								</div>
+
+								<div class="md-form">
+									<mdb-icon fas icon="mobile-alt animated zoomIn"></mdb-icon>
+									<input mdbInput type="text" pattern="[0-9]*" #newuserphone="ngModel" [(ngModel)]="registerPhone"  name="registerPhone" class="form-control text-light" [class.invalid]="newuserphone.invalid && newuserphone.touched" maxlength="11" required>
+									<span *ngIf="newuserphone.invalid && newuserphone.touched" class="text-danger">Invalid phone format</span><label for="newuserphone">Phone</label>
+								</div>
+								<div class="md-form">
+									<mdb-icon far icon="envelope animated zoomIn"></mdb-icon>
+									<input mdbInput type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]*" #newuseremail="ngModel" [(ngModel)]="registerEmail"  name="registerEmail" class="form-control text-light" [class.invalid]="newuseremail.invalid && newuseremail.touched" maxlength="30" required>
+									<span *ngIf="newuseremail.invalid && newuseremail.touched" class="text-danger">Invalid email format</span><label for="newuseremail">Email</label>
+								</div>
+								<div class="md-form">
+									<mdb-icon fas icon="key animated zoomIn"></mdb-icon>
+									<input mdbInput pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" type="password" #newuserpassword="ngModel" [(ngModel)]="registerPassword"  name="registerPassword" class="form-control text-light" [class.invalid]="newuserpassword.invalid && newuserpassword.touched" maxlength="20" required>
+									<span *ngIf="newuserpassword.invalid && newuserpassword.touched" class="text-danger">Must contain at least one number and one uppercase and lowercase letter, and at least 8 to 20 characters</span><label for="newuserpassword">Password</label>
+								</div>
+								<div class="md-form">
+										<mdb-icon fas icon="check-circle animated zoomIn"></mdb-icon>
+										<input mdbInput type="password" #verifypassword="ngModel" [(ngModel)]="verifyregpassword"  name="verifyregpassword" class="form-control text-light" [class.invalid]="verifypassword.invalid && verifypassword.touched" maxlength="20" required>
+										<span *ngIf="registerPassword != verifyregpassword && verifypassword.touched" class="text-danger">Passwords do not match</span>
+										<label for="verifyregpassword">Confirm Password</label>
+									</div>
+								<div class="md-form">
+									<button id="registerBtn" class="btn btn-block btn-sm py-3 bg-amber text-light" type="submit" [disabled]="registrationForm.invalid" (click)="registerNotify.show()">Register</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Registration notify modal -->
+<div mdbModal #registerNotify="mdbModal" class="modal fade right" id="registerNotifyTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center bg-info">
+					Registration Successful
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="bookingNotify.hide()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-footer d-flex justify-content-center">
+					<button (click)="registerNotify.hide()" (click) ="registerModal.hide()" (click) ="loginModal.show()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>Continue</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<footer class="page-footer font-small bg-amber darken-3">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 py-5">
+				<div class="mb-5 flex-center">
+					<a class="fb-ic">
+						<mdb-icon fab icon="facebook" size="2x" class="white-text mr-md-5 mr-3"></mdb-icon>
+					</a>
+
+					<a class="tw-ic">
+						<mdb-icon fab icon="twitter" size="2x" class="white-text mr-md-5 mr-3"></mdb-icon>
+					</a>
+
+					<a class="gplus-ic">
+						<mdb-icon fab fab icon="google-plus" size="2x" class="white-text mr-md-5 mr-3"></mdb-icon>
+					</a>
+
+					<a class="li-ic">
+						<mdb-icon fab icon="linkedin" size="2x" class="white-text mr-md-5 mr-3"></mdb-icon>
+					</a>
+
+					<a class="ins-ic">
+						<mdb-icon fab icon="instagram" size="2x" class="white-text mr-md-5 mr-3"></mdb-icon>
+					</a>
+
+					<a class="pin-ic">
+						<mdb-icon fab icon="pinterest" size="2x" class="white-text mr-md-5 mr-3"></mdb-icon>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="footer-copyright text-center py-3">&copy; Men's Barber 2019 Copyright:
+		<a href="#">Project:ZeroW Devs</a>
+	</div>
 </footer>
+
 
 
 

@@ -1,0 +1,224 @@
+
+<div class="row content-container">
+    <div class="col-md-6">
+        <div class="mt-4">
+            <h3>Clients</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3 offset-3 float-right">
+        <div class="md-form">
+            <input type="text" [(ngModel)]="searchText" class="form-control text-light" id="search" mdbInput>
+            <label for="search">Search</label>
+        </div>
+    </div>
+</div>
+<table mdbTable #tableEl="mdbTable" class="z-depth-1" small="true">
+    <thead class="bg-dark text-light">
+        <tr>
+            <th *ngFor="let head of headElements; let i = index" scope="col">{{head}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of users; let i = index" (click)="viewUser(user._id); showUserModal.show()" class="hand-on-hover">
+            <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex" scope="row"><a type="button">{{user.firstname }} {{ user.middlename }} {{ user.lastname }}</a></th>
+            <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"><a type="button">{{user.phone}}</a></td>
+            <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">{{user.email}}</td>
+        </tr>
+    </tbody>
+    <tfoot class="grey lighten-5 w-100">
+        <tr>
+            <td colspan="12">
+            <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="users"></mdb-table-pagination>
+        </td>
+        </tr>
+    </tfoot>
+</table>
+
+
+<!-- Modals -->
+
+<!-- Show user modal -->
+<div mdbModal #showUserModal="mdbModal" class="modal fade bottom bg-unique text-light" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content bg-unique-dark">
+			<div class="modal-header bg-unique-dark">
+				<h4 class="modal-title w-100 font-weight-bold">User Information</h4>
+				<button type="button" class="close text-light" data-dismiss="modal" aria-label="Close" (click)="showUserModal.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body mx-3 bg-unique-dark">
+				<form>
+					<div class="md-form mb-5">
+						<mdb-icon fas icon="user" class="prefix grey-text"></mdb-icon>
+						<input type="text" class="form-control text-light" value="{{user.firstname}} {{user.middlename}} {{user.lastname}}" mdbInput readonly>
+						<label for="userNameEdit">Name</label>
+					</div>
+					<div class="md-form mb-5">
+						<mdb-icon fas icon="mobile-alt" class="prefix grey-text"></mdb-icon>
+						<input type="text" class="form-control text-light" value="{{user.phone}}"mdbInput readonly>
+						<label for="userAgeEdit">Phone</label>
+                    </div>
+                    <div class="md-form mb-5">
+						<mdb-icon fas icon="envelope" class="prefix grey-text"></mdb-icon>
+						<input type="text" class="form-control text-light" value="{{user.email}}"mdbInput readonly>
+						<label for="userAgeEdit">Email</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <button type="button" (click)="editUser(); showUserModal.hide(); editUserModal.show()" mdbBtn color="amber" class="waves-light d-flex justify-content-center" block="true" mdbWavesEffect>EDIT</button>
+                        </div>
+                        <div class="col-xl-6">
+                            <button type="button" (click)="showUserModal.hide(); confirmDeleteModal.show()" mdbBtn color="danger" class="waves-light d-flex justify-content-center" block="true" mdbWavesEffect>DELETE</button>
+                        </div>
+                    </div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Edit user modal -->
+<div mdbModal #editUserModal="mdbModal" class="modal fade top bg-unique text-light" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog bg-unique-dark" role="document">
+		<div class="modal-content bg-unique-dark">
+			<div class="modal-header bg-unique-dark">
+				<h4 class="modal-title w-100 font-weight-bold">Update User</h4>
+				<button type="button" class="close text-light" data-dismiss="modal" aria-label="Close" (click)="editUserModal.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body mx-3 bg-unique-dark">
+				<form>
+					<div class="md-form mb-5">
+						<mdb-icon fas icon="user" class="prefix grey-text"></mdb-icon>
+						<input pattern="[^/0-9!@#$%^&*(){}|;,/]*" type="text" class="form-control text-light" #editfirstname="ngModel" name="editFirstname" [(ngModel)]="editFirstname" mdbInput required>
+                        <label for="editFirstname">Firstname</label>
+                        <mdb-error *ngIf="editfirstname.invalid && (editfirstname.dirty || editfirstname.touched)">Input format</mdb-error>
+                    </div>
+                    <div class="md-form mb-5">
+						<mdb-icon fas icon="user" class="prefix grey-text"></mdb-icon>
+						<input pattern="[^/0-9!@#$%^&*(){}|;,/]*" type="text" class="form-control text-light" #editmiddlename="ngModel" name="editMiddlename" [(ngModel)]="editMiddlename" mdbInput required>
+                        <label for="editMiddlename">Middlename</label>
+                        <mdb-error *ngIf="editmiddlename.invalid && (editmiddlename.dirty || editmiddlename.touched)">Input format</mdb-error>
+                    </div>
+                    <div class="md-form mb-5">
+						<mdb-icon fas icon="user" class="prefix grey-text"></mdb-icon>
+						<input pattern="[^/0-9!@#$%^&*(){}|;,/]*" type="text" class="form-control text-light" #editlastname="ngModel" name="editLastname" [(ngModel)]="editLastname" mdbInput required>
+                        <label for="editLastname">Lastname</label>
+                        <mdb-error *ngIf="editlastname.invalid && (editlastname.dirty || editlastname.touched)">Input format</mdb-error>
+					</div>
+					<div class="md-form mb-5">
+						<mdb-icon fas icon="mobile-alt" class="prefix grey-text"></mdb-icon>
+						<input pattern="[/0-9/]*" type="text" class="form-control text-light" #editphone="ngModel" name="editPhone" [(ngModel)]="editPhone" maxlength="11" placeholder="Ex. 09191234567" mdbInput required>
+                        <label for="editPhone">Phone</label>
+                        <mdb-error *ngIf="editphone.invalid && (editphone.dirty || editphone.touched)">Input phone format</mdb-error>
+                    </div>
+                    <div class="md-form mb-5">
+						<mdb-icon fas icon="envelope" class="prefix grey-text"></mdb-icon>
+						<input pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]*" type="text" class="form-control text-light" #editemail="ngModel" name="editEmail" [(ngModel)]="editEmail" placeholder="Ex. guest@email.com" mdbInput required>
+                        <label for="editEmail">Email</label>
+                        <mdb-error *ngIf="editemail.invalid && (editemail.dirty || editemail.touched)">Input email format</mdb-error>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <button type="button" mdbBtn color="blue-grey" (click)="editUserModal.hide()" class="waves-light d-flex justify-content-center" block="true" mdbWavesEffect>CANCEL</button>
+                        </div>
+                        <div class="col-xl-6">
+                            <button type="button" mdbBtn color="amber" (click)="confirmUpdateModal.show()" class="waves-light d-flex justify-content-center" block="true" mdbWavesEffect>UPDATE</button>
+                        </div>
+                    </div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Update user confirm modal -->
+<div mdbModal #confirmUpdateModal="mdbModal" class="modal fade left" id="confirmUpdateModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}">
+	<div class="modal-dialog modal-frame modal-top modal-notify modal-info" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center bg-warning">
+				Confirm to save changes to this user
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="confirmUpdateModal.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-footer d-flex justify-content-center">
+				<div class="row">
+					<div class="col-xl-6">
+						<button (click)="confirmUpdateModal.hide()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>CANCEL</button>
+					</div>
+					<div class="col-xl-6">
+						<button (click)="updateUser(); confirmUpdateModal.hide(); userUpdatedNotify.show(); editUserModal.hide()" mdbBtn color="amber" class="waves-light" mdbWavesEffect>UPDATE</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Update user notify modal -->
+<div mdbModal #userUpdatedNotify="mdbModal" class="modal fade right" id="userUpdatedNotifyTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center bg-info">
+				User has been updated
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="userUpdatedNotify.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-footer d-flex justify-content-center">
+				<button (click)="userUpdatedNotify.hide()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Delete user confirm modal -->
+<div mdbModal #confirmDeleteModal="mdbModal" class="modal fade left" id="confirmDeleteModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}">
+	<div class="modal-dialog modal-frame modal-top modal-notify" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center bg-danger">
+				Confirm to delete user
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="confirmDeleteModal.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-footer d-flex justify-content-center">
+				<div class="row">
+					<div class="col-xl-6">
+						<button (click)="confirmDeleteModal.hide()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>CANCEL</button>
+					</div>
+					<div class="col-xl-6">
+						<button (click)="deleteUser(); userDeletedNotify.show(); showUserModal.hide(); confirmDeleteModal.hide()" mdbBtn color="danger" class="waves-light" mdbWavesEffect>DELETE</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<!-- Delete user notify modal -->
+<div mdbModal #userDeletedNotify="mdbModal" class="modal fade right" id="userDeletedNotifyTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center bg-info">
+				User has been deleted
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="userDeletedNotify.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-footer d-flex justify-content-center">
+				<button (click)="userDeletedNotify.hide(); getUsers()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>OK</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,17 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser'
+import { NgModule } from '@angular/core'
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { AppRoutingModule } from './app-routing.module'
+import { AppComponent } from './app.component'
+import { HttpClientModule } from '@angular/common/http'
+import { FormsModule } from '@angular/forms'
 
-import { MDBBootstrapModule } from 'angular-bootstrap-md';
-import { HomeComponent } from './home/home.component';
-import { StylesComponent } from './styles/styles.component';
-import { ReservationsComponent } from './reservations/reservations.component';
-import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
-import { LoginComponent } from './login/login.component';
+import { MDBBootstrapModule } from 'angular-bootstrap-md'
+import { HomeComponent } from './home/home.component'
+import { StylesComponent } from './styles/styles.component'
+import { ReservationsComponent } from './reservations/reservations.component'
+import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component'
+import { UsersComponent } from './users/users.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AccountComponent } from './account/account.component'
+import { UserService } from './services/user.service';
+import { UserGuard } from './user.guard'
+import { StyleService } from './services/style.service'
+
 
 
 
@@ -22,7 +28,9 @@ import { LoginComponent } from './login/login.component';
     StylesComponent,
     ReservationsComponent,
     PagenotfoundComponent,
-    LoginComponent,
+    UsersComponent,
+    DashboardComponent,
+    AccountComponent,
   ],
   imports: [
     BrowserModule,
@@ -31,7 +39,7 @@ import { LoginComponent } from './login/login.component';
     FormsModule,
     MDBBootstrapModule.forRoot()
   ],
-  providers: [],
+  providers: [UserService, UserGuard,StyleService],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

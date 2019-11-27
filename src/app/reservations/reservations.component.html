@@ -1,39 +1,31 @@
 
-<div class="row content-container">
+<div class="row content-container animated slideInLeft">
     <div class="col-md-6">
         <div class="mt-4">
-            <h3>Reservations</h3>
+            <h3>Haircuts</h3>
         </div>
     </div>
 
     <div class="col-md-3 offset-3 float-right">
         <div class="md-form">
-            <input type="text" [(ngModel)]="searchText" class="form-control" id="search" mdbInput>
+            <input type="text" [(ngModel)]="searchText" class="form-control text-light" id="search" mdbInput>
             <label for="search">Search</label>
         </div>
     </div>
 </div>
-<table mdbTable #tableEl="mdbTable" class="z-depth-1" small="true">
+<table mdbTable #tableEl="mdbTable" class="z-depth-1 animated slideInLeft" small="true">
     <thead class="bg-dark text-light">
         <tr>
             <th *ngFor="let head of headElements; let i = index" scope="col">{{head}}</th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let reservation of reservations; let i = index">
-        <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex" scope="row"><a type="button">{{reservation.client_id.firstname }} {{ reservation.client_id.middlename }} {{ reservation.client_id.lastname }}</a></th>
-        <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"><a type="button">{{reservation.style_id.name}}</a></td>
-        <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">{{reservation.reservation_date | date:'shortDate'}}</td>
-        <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">{{reservation.reservation_date | date:'mediumTime'}}</td>
-        <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">{{reservation.payment_status}}</td>
-        <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-            <button mdbBtn type="button" color="yellow" size="sm" mdbWavesEffect (click)="editModal.show(); editReservation(reservation._id)">
-                <mdb-icon fas icon="pen" class="mr-1"></mdb-icon>Edit
-            </button>
-            <button mdbBtn type="button" color="danger" size="sm" mdbWavesEffect (click)="deleteReservation(reservation._id)">
-                <mdb-icon fas icon="trash" class="mr-1"></mdb-icon>Delete
-            </button>
-        </td>
+        <tr *ngFor="let reservation of reservations; let i = index" (click)="getReservation(reservation._id); showReservationModal.show()" class="hand-on-hover">
+            <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex" scope="row"><a type="button">{{reservation.client_id.firstname}} {{ reservation.client_id.middlename }} {{ reservation.client_id.lastname }}</a></th>
+            <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"><a type="button">{{reservation.style_id.name}}</a></td>
+            <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">{{reservation.reservation_date | date:'shortDate'}}</td>
+            <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">{{reservation.reservation_date | date:'mediumTime'}}</td>
+            <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">{{reservation.status}}</td>
         </tr>
     </tbody>
     <tfoot class="grey lighten-5 w-100">
@@ -48,63 +40,195 @@
 
 <!-- Modals -->
 
-<!-- Edit Modal -->
-<div  style="overflow-y: auto" mdbModal #editModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-amber">
-                    <h5 class="modal-title" id="editModalLabel">Edit Reservation</h5>
-                    <button type="button" class="close text-dark" (click)="editModal.hide()" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-        
-                <div class="modal-body p-5">
-                    <form (submit)="updateReservation()" #updateForm="ngForm">
-                            <label for="editStyle" class="">Style</label>
-                            <select class="form-control" [(ngModel)]="editStyle" name="editStyle">
-                                <option *ngFor="let row of styles" [value]="row._id" [selected]="row._id == style._id">{{ row.name }}</option>
-                            </select>
-                            
-                            <label for="bookingdate" class="mt-3">Date and Time</label>
-                                <div class="row mt-3">
-                                    <div class="col-lg-2">
-                                        Cur. Date:
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <input class="form-control" value="{{ reservation.reservation_date | date:'shortDate' }}" disabled>
-                                    </div>
-
-                                    <div class="col-lg-2">
-                                        New Date:
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <input mdbInput type="date" #newdate="ngModel" [(ngModel)]="newbookingdate" name="newbookingdate" class="form-control" required>
-                                    </div>
-                                </div>
-                            
-                                <div class="row mt-3">
-                                    <div class="col-lg-2">
-                                        Cur. Time:
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <input class="form-control" value="{{ reservation.reservation_date | date:'mediumTime' }}" disabled>
-                                    </div>
-
-                                    <div class="col-lg-2">
-                                        New Time:
-                                    </div>
-                                    <div class="col-lg-4">
-                                            <input mdbInput type="time" #newtime="ngModel" [(ngModel)]="newbookingtime" name ="newbookingtime" class="form-control" required/>
-                                    </div>
-                                </div>
-                            
-
-                            <button id="updateBtn" class="btn btn-block btn-sm bg-amber text-light mt-3" type="submit" [disabled]="updateForm.invalid">Save</button>
-      
-                    </form>
-                    
-                </div>
+<!-- Show resevation modal -->
+<div mdbModal #showReservationModal="mdbModal" class="modal fade bottom bg-unique text-light" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog bg-unique-dark" role="document">
+        <div class="modal-content bg-unique-dark">
+            <div class="modal-header">
+                <h4 class="modal-title w-100 font-weight-bold">Haircut Reservation Information</h4>
+                <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close" (click)="showReservationModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mx-3 bg-unique-dark">
+                <form>
+                    <div class="md-form mb-5">
+                        <mdb-icon fas icon="user" class="prefix grey-text"></mdb-icon>
+                        <input type="text" class="form-control text-light" value="{{ reservationClient.firstname }} {{ reservationClient.middlename }} {{ reservationClient.lastname }}" mdbInput readonly>
+                        <label>Client</label>
+                    </div>
+                    <div class="md-form mb-5">
+                        <mdb-icon fas icon="cut" class="prefix grey-text"></mdb-icon>
+                        <input type="text" class="form-control text-light" value="{{ reservationStyle.name }}" mdbInput readonly>
+                        <label>Style</label>
+                    </div>
+                    <div class="md-form mb-5">
+                        <mdb-icon fas icon="calendar-alt" class="prefix grey-text"></mdb-icon>
+                        <input type="text" class="form-control text-light" value="{{ reservation.reservation_date | date:'shortDate' }}" mdbInput readonly>
+                        <label>Date</label>
+                    </div>
+                    <div class="md-form mb-5">
+                        <mdb-icon fas icon="clock" class="prefix grey-text"></mdb-icon>
+                        <input type="text" class="form-control text-light" value="{{ reservation.reservation_date | date:'mediumTime' }}" mdbInput readonly>
+                        <label>Time</label>
+                    </div>
+                    <div class="md-form mb-5">
+                        <mdb-icon fas icon="atom" class="prefix grey-text"></mdb-icon>
+                        <input type="text" class="form-control text-light" value="{{ reservation.status }}" mdbInput readonly>
+                        <label>Status</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <button type="button" mdbBtn color="amber" (click)="editModal.show(); showReservationModal.hide()" class="waves-light d-flex justify-content-center" block="true" mdbWavesEffect>EDIT</button>
+                        </div>
+                        <div class="col-xl-6">
+                            <button type="button" mdbBtn color="danger" (click)="confirmDeleteModal.show()" class="waves-light d-flex justify-content-center" block="true" mdbWavesEffect>DELETE</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Edit Modal -->
+<div  style="overflow-y: auto" mdbModal #editModal="mdbModal" class="modal fade top bg-unique text-light" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg bg-unique-dark" role="document">
+        <div class="modal-content bg-unique-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Haircut Reservation</h5>
+                <button type="button" class="close text-light" (click)="editModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body p-5 bg-unique-dark">
+                <form #updateForm="ngForm">
+                    <label for="editStyle" class="">Style</label>
+                    <select class="form-control text-dark" [(ngModel)]="editStyle" name="editStyle">
+                        <option *ngFor="let style of styles" [value]="style._id" [selected]="style._id == reservationStyle._id">{{ style.name }}</option>
+                    </select>
+
+                    <label for="bookingdate" class="mt-3">Date and Time</label>
+                        <div class="row mt-3">
+                            <div class="col-lg-2">
+                                Cur. Date:
+                            </div>
+                            <div class="col-lg-4">
+                                <input class="form-control text-dark" value="{{ reservation.reservation_date | date:'shortDate' }}" disabled>
+                            </div>
+
+                            <div class="col-lg-2">
+                                New Date:
+                            </div>
+                            <div class="col-lg-4">
+                                <input mdbInput type="date" #newdate="ngModel" [(ngModel)]="newbookingdate" name="newbookingdate" class="form-control text-dark" required>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-lg-2">
+                                Cur. Time:
+                            </div>
+                            <div class="col-lg-4">
+                                <input class="form-control text-dark" value="{{ reservation.reservation_date | date:'mediumTime' }}" disabled>
+                            </div>
+
+                            <div class="col-lg-2">
+                                New Time:
+                            </div>
+                            <div class="col-lg-4">
+                                <input mdbInput type="time" #newtime="ngModel" [(ngModel)]="newbookingtime" name ="newbookingtime" class="form-control text-dark" required/>
+                            </div>
+                        </div>
+
+                    <button id="updateBtn" class="btn btn-block btn-sm bg-amber text-light mt-3 py-3" type="button" (click)="confirmUpdateModal.show()" [disabled]="updateForm.invalid">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Update reservation confirm modal -->
+<div mdbModal #confirmUpdateModal="mdbModal" class="modal fade left" id="confirmUpdateModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}">
+	<div class="modal-dialog modal-frame modal-top modal-notify modal-info" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center bg-warning">
+				Confirm to save changes to this reservation
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="confirmUpdateModal.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-footer d-flex justify-content-center">
+				<div class="row">
+					<div class="col-xl-6">
+						<button (click)="confirmUpdateModal.hide()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>CANCEL</button>
+					</div>
+					<div class="col-xl-6">
+						<button (click)="updateReservation(); confirmUpdateModal.hide(); reservationUpdatedNotify.show(); editModal.hide()" mdbBtn color="amber" class="waves-light" mdbWavesEffect>UPDATE</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Update reservation notify modal -->
+<div mdbModal #reservationUpdatedNotify="mdbModal" class="modal fade right" id="userUpdatedNotifyTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center bg-info">
+				User has been updated
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="reservationUpdatedNotify.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-footer d-flex justify-content-center">
+				<button (click)="reservationUpdatedNotify.hide()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+    <!-- Delete reservation confirm modal -->
+<div mdbModal #confirmDeleteModal="mdbModal" class="modal fade left" id="confirmDeleteModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}">
+	<div class="modal-dialog modal-frame modal-top modal-notify" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center bg-danger">
+				Confirm to delete reservation
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="confirmDeleteModal.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-footer d-flex justify-content-center">
+				<div class="row">
+					<div class="col-xl-6">
+						<button (click)="confirmDeleteModal.hide()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>CANCEL</button>
+					</div>
+					<div class="col-xl-6">
+						<button (click)="deleteReservation(); reservationDeletedNotify.show(); showReservationModal.hide(); confirmDeleteModal.hide()" mdbBtn color="danger" class="waves-light" mdbWavesEffect>DELETE</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Delete reservation notify modal -->
+<div mdbModal #reservationDeletedNotify="mdbModal" class="modal fade right" id="userDeletedNotifyTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center bg-info">
+				Reservation has been deleted
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="reservationDeletedNotify.hide()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-footer d-flex justify-content-center">
+				<button (click)="reservationDeletedNotify.hide(); getUsers()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>OK</button>
+			</div>
+		</div>
+	</div>
+</div>

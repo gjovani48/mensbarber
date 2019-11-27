@@ -40,11 +40,50 @@ export class ReservationService {
   }
 
   updateReservation(reservation): Observable<any>{
-    console.log(reservation)
     return this.http.put<any>(
       this.url + "/reservation/"+ reservation._id,
       reservation,
       { headers: this.headers }
     )
   }
+
+  getUserReservations(id): Observable<any>{
+    return this.http.get<any>(
+      this.url + "/reservation/userreservations/" + id
+    )
+  }
+
+  addCountToStyle(reservation): Observable<any>{
+    return this.http.put<any>(
+      this.url + "/reservation/incToSTyle/"+ reservation.style_id,
+      reservation,
+      { headers: this.headers }
+    )
+  }
+
+  getReservationDate(date): Observable<Reservation[]>{
+		return this.http.get<Reservation[]>(
+      this.url + "/reservation/getdate/" + date
+		)
+  }
+
+
+  getCompletedReservations(): Observable<Reservation[]>{
+		return this.http.get<Reservation[]>(
+			this.url + '/reservation/completedreservation'
+		)
+  }
+
+  getStylesStats(id):Observable<Reservation[]>{
+    return this.http.get<Reservation[]>(
+      this.url + '/reservation/stylecount/' + id
+    )
+  }
+
+  getReservationsToday(): Observable<Reservation[]>{
+		return this.http.get<Reservation[]>(
+			this.url + "/reservation/reservationstoday"
+		)
+  }
+
 }

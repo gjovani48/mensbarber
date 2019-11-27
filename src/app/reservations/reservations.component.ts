@@ -4,6 +4,8 @@ import { Reservation } from '../models/reservation'
 import { Style } from '../models/style'
 import { ReservationService } from '../services/reservation.service'
 import { StyleService } from '../services/style.service'
+import { User } from '../models/user'
+import { UserService } from '../services/user.service'
 
 @Component({
 	selector: 'app-reservations',
@@ -17,20 +19,23 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
 	@ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective
 	private reservations: any = []
 	private previous: any = []
-	private headElements = ['Client', 'Style', 'Date', 'Time', 'Status', 'Action']
+	private headElements = ['Client', 'Style', 'Date', 'Time', 'Status']
 	private searchText: string = ''
 
-	private reservation: any = []
-	private style: any = []
+	private reservation
 
-	private styles: any = []
+	private reservationClient
+	private reservationStyle: any = []
+
+  private styles: any = []
+  private user = new User()
 
 	private editStyle: String
 
 	private newbookingdate
 	private newbookingtime
 
-	constructor(private cdRef: ChangeDetectorRef, private reservationService: ReservationService, private styleService: StyleService) {}
+	constructor(private cdRef: ChangeDetectorRef, private reservationService: ReservationService, private styleService: StyleService, private userService: UserService) {}
 
 	@HostListener('input') oninput() {
 		this.searchItems()
@@ -38,6 +43,21 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
 
 	ngOnInit() {
 		this.getReservations()
+		this.reservation = new Reservation()
+		this.reservationClient = new User()
+		this.reservationStyle = new Style()
+		this.styleService.getStyles().subscribe((response) => {
+			this.styles = response
+    })
+
+    if(!!localStorage.getItem('token')){
+
+      var id = localStorage.getItem('token');
+
+       this.viewUser(id.slice(0,24));
+
+    }
+
 	}
 
 	ngAfterViewInit() {
@@ -61,6 +81,14 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
 		}
 	}
 
+	getReservation(id){
+		this.reservationService.getReservation(id).subscribe((response)=> {
+			this.reservation = response[0]
+			this.reservationClient = response[0].client_id
+			this.reservationStyle = response[0].style_id
+		})
+	}
+
 	getReservations(){
 		this.reservationService.getReservations().subscribe((response) => {
 			this.reservations = response
@@ -69,26 +97,10 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
 			this.previous = this.mdbTable.getDataSource()
 		})
 	}
-	
-	deleteReservation(id){
-		if(confirm("Confirm Delete? ")){
-			this.reservationService.deleteReservation(id).subscribe((response) => {
 
-				alert("Reservation Deleted")
-				this.getReservations()
-			})
-		}
-	}
-
-	editReservation(id){
-		
-		this.reservationService.getReservation(id).subscribe((response) => {
-			this.reservation = response
-			this.style = this.reservation.style_id
-			this.editStyle = this.style._id
-			this.styleService.getStyles().subscribe((response) => {
-				this.styles = response
-			})
+	deleteReservation(){
+		this.reservationService.deleteReservation(this.reservation._id).subscribe((response) => {
+			this.getReservations()
 		})
 	}
 
@@ -98,14 +110,23 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
 		reservation._id = this.reservation._id
 		reservation.reservation_date = this.newbookingdate
 		reservation.total = this.reservation.total
-		reservation.payment_status = this.reservation.payment_status
-		reservation.client_id = this.reservation.client_id
+		reservation.status = this.reservation.status
+		reservation.client_id = this.reservationClient._id
 		reservation.style_id = this.editStyle
-		if(confirm("Save changes?")){
-			this.reservationService.updateReservation(reservation).subscribe((response) => {
-				alert("Booking Successful");
-				this.getReservations()
-			})
-		}
-	}
+		this.reservationService.updateReservation(reservation).subscribe((response) => {
+			this.getReservations()
+		})
+  }
+
+  viewUser(id){
+    this.userService.viewUser(id).subscribe((response) => {
+      this.user = response[0]
+
+      if(this.user.role=="client"){
+        window.location.href="/home";
+      }
+
+    })
+  }
+
 }

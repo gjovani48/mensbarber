@@ -14,19 +14,13 @@
     margin-top: 100px;
 }
 
-.loginBtn{
-    background-color: #f44336;
+.loginBtn, .logoutBtn{
     transition: .5s ease;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    color: white;
-    border: none;
+    color: black;
+
 }
 
-.loginBtn:hover:hover{
-    background-color: gray;
+.loginBtn:hover, .logoutBtn:hover{
+    color: white;
     transition: .5s ease;
-    border: none;
 }

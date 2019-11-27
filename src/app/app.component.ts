@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { ClientService } from './services/client.service'
-import { Client } from './models/client'
-import { Router } from '@angular/router'
+import { UserService } from './services/user.service'
+import { User } from './models/user'
+
 
 @Component({
   selector: 'app-root',
@@ -12,16 +12,14 @@ import { Router } from '@angular/router'
 export class AppComponent {
   title = "Men's Barber"
 
-  private clients: Client[]
-
   // login
   private userEmail: String
   private userPassword: String
-  private client
+  public user = new User()
 
   // registration
   private createAccount = false
-  private newclient: Client[]
+  private newuser: User[]
   private registerFirstname
   private registerMiddlename
   private registerLastname
@@ -33,56 +31,70 @@ export class AppComponent {
   private loggedIn = false
 
   constructor(
-    private clientService: ClientService,
-    private router: Router
+    private userService: UserService
     ) { }
- 
-  addClient(){
 
-    const newclient = new Client()
-    newclient.firstname = this.registerFirstname
-    newclient.middlename = this.registerMiddlename
-    newclient.lastname = this.registerLastname
-    newclient.phone = this.registerPhone
-    newclient.email = this.registerEmail
-    newclient.password = this.registerPassword
+  ngOnInit(){
+    if(localStorage.getItem('token')){
+      this.loggedIn = true
+      var id = localStorage.getItem('token');
+      this.userService.viewUser(id.slice(0,24)).subscribe((response) =>{
+        this.user = response[0];
+      })  
+    }
+  }
 
-    this.clientService.addClient(newclient).subscribe((data)=>{
-        console.log(data)
-        alert("registration success!")
- 
+  addUser(){
+    const newuser = new User()
+    newuser.firstname = this.registerFirstname
+    newuser.middlename = this.registerMiddlename
+    newuser.lastname = this.registerLastname
+    newuser.phone = this.registerPhone
+    newuser.email = this.registerEmail
+    newuser.password = this.registerPassword
+    this.userService.addUser(newuser).subscribe((data)=>{
+      if(data.msg == "success"){
+        alert("Registration Successful")
+      }
     })
 
   }
 
   login(){
-    this.client = new Client()
-    this.client.email = this.userEmail
-    this.client.password = this.userPassword
-    this.clientService.login(this.client).subscribe((response) => {
-      this.client = response.client
-      this.clientService.setClient(this.client)
-      this.loggedIn = true
-      alert("Log in Successful")
+    this.user = new User()
+    this.user.email = this.userEmail
+    this.user.password = this.userPassword
+    this.userService.login(this.user).subscribe((response) => {
+      if(response.msg == "success"){
+        localStorage.setItem('token',response.user._id+"."+response.token)
+        var id = localStorage.getItem('token');
+        this.viewUser(id.slice(0,24));
+
+        if(!!localStorage.getItem('token')){
+          this.loggedIn = true
+          alert("Login Success");
+          window.location.href = "/"
+        }
+
+      }
+      else{
+        alert("Login failed")
+      }
+
     })
   }
 
-  getClients(){
-    this.clientService.getClients().subscribe((response) => {
-      this.clients = response
+  viewUser(id){
+    this.userService.viewUser(id).subscribe((response) =>{
+      this.user = response[0];
     })
   }
 
-  navigateHome(client_id){
-    this.router.navigate(['/home', client_id])
+  logOut(){
+    if(confirm("Are you sure to logout?")){
+      alert("Logged out");
+      window.location.href = "/"
+      localStorage.removeItem("token")
+    } 
   }
-
-  navigateStyle(client_id){
-    this.router.navigate(['/styles', client_id])
-  }
-
-  navigateReservation(client_id){
-    this.router.navigate(['/reservations', client_id])
-  }
-
 }

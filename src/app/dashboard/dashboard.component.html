@@ -1,0 +1,360 @@
+<div id="content" class="row animated slideInLeft">
+
+  <div class="col-lg-12 row ">
+
+      <div class="col-lg-3 p-3">
+          <mdb-card cascade="true" class="cascading-admin-card">
+
+              <!--Card Data-->
+              <div class="row col-lg-12">
+                  <div class="col-lg-12">
+                      <div class="col-lg-4 p-2 float-left primary-color text-light shadow-lg">
+                          <mdb-icon fas icon="cut" class="fa-2x" ></mdb-icon>
+                      </div>
+
+                        <div class="col-lg-8 p-3 float-right">
+                            <p class="text-muted">Styles</p>
+                            <h3><strong>{{styles.length}}</strong></h3>
+                        </div>
+                  </div>
+              </div>
+              <!--/.Card Data-->
+
+              <!--Card content-->
+              <mdb-card-body>
+                  <div class="progress">
+                      <div class="progress-bar bg-primary" role="progressbar" [style.width]="styles.length + '%' " aria-valuenow="25"
+                           aria-valuemin="0" aria-valuemax="100">{{styles.length}}</div>
+                  </div>
+                  <!--Text-->
+                  <p class="card-text">Better than last week (25%)</p>
+              </mdb-card-body>
+              <!--/.Card content-->
+
+          </mdb-card>
+      </div>
+
+      <div class="col-lg-3 p-3">
+          <mdb-card cascade="true" class="cascading-admin-card">
+
+              <!--Card Data-->
+              <div class="row col-lg-12">
+                  <div class="col-lg-12 ">
+                      <div class="col-lg-4 p-2 float-left primary-color text-light shadow-lg">
+
+                          <mdb-icon fas icon="user" class="fa-2x"></mdb-icon>
+                      </div>
+
+                        <div class="col-lg-7 p-3 float-right">
+                            <p class="text-muted">Clients</p>
+                            <h3><strong>{{users.length}}</strong></h3>
+                        </div>
+                  </div>
+              </div>
+              <!--/.Card Data-->
+
+              <!--Card content-->
+              <mdb-card-body>
+                  <div class="progress">
+                      <div class="progress-bar bg-primary" role="progressbar" [style.width]="users.length + '%' " aria-valuenow="25"
+                           aria-valuemin="0" aria-valuemax="100">{{users.length}}</div>
+                  </div>
+                  <!--Text-->
+                  <p class="card-text">Better than last week (25%)</p>
+              </mdb-card-body>
+              <!--/.Card content-->
+
+          </mdb-card>
+      </div>
+
+      <div class="col-lg-3 p-3">
+          <mdb-card cascade="true" class="cascading-admin-card">
+
+              <!--Card Data-->
+              <div class="row col-lg-12">
+                  <div class="col-lg-12">
+                      <div class="col-lg-4 p-2 float-left primary-color text-light shadow-lg">
+                          <mdb-icon fas icon="book" class="fa-2x"></mdb-icon>
+                      </div>
+
+                        <div class="col-lg-8 p-3 float-right">
+                            <p class="text-muted text-sm small">Haircuts</p>
+                            <h3><strong>{{reservations.length}}</strong></h3>
+                        </div>
+                  </div>
+              </div>
+              <!--/.Card Data-->
+
+              <!--Card content-->
+              <mdb-card-body>
+                  <div class="progress">
+                      <div class="progress-bar bg-primary" role="progressbar" [style.width]="reservations.length + '%' " aria-valuenow="25"
+                           aria-valuemin="0" aria-valuemax="100">{{reservations.length}}</div>
+                  </div>
+                  <!--Text-->
+                  <p class="card-text">Better than last week (25%)</p>
+              </mdb-card-body>
+              <!--/.Card content-->
+
+          </mdb-card>
+      </div>
+
+      <div class="col-lg-3 p-3">
+          <mdb-card cascade="true" class="cascading-admin-card">
+
+              <!--Card Data-->
+              <div class="row col-lg-12">
+                  <div class="col-lg-12">
+                      <div class="col-lg-4 p-2 float-left primary-color text-light shadow-lg">
+                          <mdb-icon fas icon="calendar-day" class="fa-2x"></mdb-icon>
+                      </div>
+
+                        <div class="col-lg-8 p-3 float-right">
+                            <p class="text-muted text-sm small">Completed Haircuts</p>
+                            <h3><strong>{{completedreservations.length}}</strong></h3>
+                        </div>
+                  </div>
+              </div>
+              <!--/.Card Data-->
+
+              <!--Card content-->
+              <mdb-card-body>
+                  <div class="progress md-progress" style="height: 20px">
+                    <div class="progress-bar" role="progressbar" [style.width]="completedreservations.length + '%' " style="height: 20px" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{completedreservations.length}}</div>
+                  </div>
+
+                  <!--Text-->
+                  <p class="card-text">Better than last week (25%)</p>
+              </mdb-card-body>
+              <!--/.Card content-->
+
+          </mdb-card>
+      </div>
+
+  </div>
+
+
+  <div class="row col-lg-12">
+
+      <div class="col-lg-6">
+          <h4>Recently recorded haircut reservation</h4>
+          <table mdbTable #recenttable="mdbTable" class="z-depth-1" small="true">
+              <thead class="black white-text">
+                <tr>
+                  <th scope="col">Client</th>
+                  <th scope="col">Style</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr mdbTableCol *ngFor="let el of reservations.slice(0,5)" class="hand-on-hover">
+                  <td>{{el.client_id.firstname}} {{ el.client_id.middlename }} {{ el.client_id.lastname }}</td>
+                  <td>{{el.style_id.name}}</td>
+                  <td>{{el.reservation_date | date:'shortDate'}}</td>
+                  <td>{{el.reservation_date | date:'mediumTime'}}</td>
+                </tr>
+              </tbody>
+              <tfoot class="grey lighten-5 w-100">
+                <tr>
+                    <td colspan="12">
+                    <mdb-table-pagination [tableEl]="recenttable" [searchDataSource]="reservations"></mdb-table-pagination>
+                </td>
+                </tr>
+              </tfoot>
+            </table>
+      </div>
+
+      <div class="col-lg-6">
+        <h4>Todays reservation</h4>
+        <table mdbTable #todaytable="mdbTable" class="z-depth-1" small="true">
+          <thead class="black white-text">
+            <tr>
+              <th scope="col">Client</th>
+              <th scope="col">Style</th>
+              <th scope="col">Time</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr mdbTableCol *ngFor="let el of todaysreservations.slice(0,5)" class="hand-on-hover" (click)="getReservation(el._id); todayReservationModal.show()">
+              <td>{{el.client_id.firstname}} {{ el.client_id.middlename }} {{ el.client_id.lastname }}</td>
+              <td>{{el.style_id.name}}</td>
+              <td>{{el.reservation_date | date:'mediumTime'}}</td>
+              <td>{{el.status}}</td>
+            </tr>
+          </tbody>
+          <tfoot class="grey lighten-5 w-100">
+                <tr>
+                    <td colspan="12">
+                    <mdb-table-pagination [tableEl]="todaytable" [searchDataSource]="todaysreservations"></mdb-table-pagination>
+                </td>
+                </tr>
+            </tfoot>
+        </table>
+
+      </div>
+
+     
+
+      <div class="row col-lg-12">
+       
+          <div class="col-lg-6">
+            <h5>Trending styles</h5>
+              <ul class="list-unstyled">
+                <li *ngFor="let el of styles.slice(0,5)">
+                    <p>{{el.name}}<p>
+                    <span>
+                        <span class="progress">
+                            <span class="progress-bar bg-primary" role="progressbar" [style.width]="el.count + '%' " aria-valuenow="el.count"
+                                aria-valuemin="0" aria-valuemax="100"></span>
+                        </span>
+                        <p class="card-text">Better than last week {{el.count}}</p>
+                    </span>
+                </li>
+              </ul>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<!-- Modals -->
+
+<!-- Show resevation modal -->
+<div mdbModal #todayReservationModal="mdbModal" class="modal fade bottom bg-unique text-light" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog bg-unique-dark" role="document">
+        <div class="modal-content bg-unique-dark">
+            <div class="modal-header">
+                <h4 class="modal-title w-100 font-weight-bold">Haircut Reservation Information</h4>
+                <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close" (click)="todayReservationModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mx-3 bg-unique-dark">
+                <form>
+                    <div class="md-form mb-5">
+                        <mdb-icon fas icon="user" class="prefix grey-text"></mdb-icon>
+                        <input type="text" class="form-control text-light" value="{{ reservationClient.firstname }} {{ reservationClient.middlename }} {{ reservationClient.lastname }}" mdbInput readonly>
+                        <label>Client</label>
+                    </div>
+                    <div class="md-form mb-5">
+                        <mdb-icon fas icon="cut" class="prefix grey-text"></mdb-icon>
+                        <input type="text" class="form-control text-light" value="{{ reservationStyle.name }}" mdbInput readonly>
+                        <label>Style</label>
+                    </div>
+                    <div class="md-form mb-5">
+                        <mdb-icon fas icon="calendar-alt" class="prefix grey-text"></mdb-icon>
+                        <input type="text" class="form-control text-light" value="{{ reservation.reservation_date | date:'shortDate' }}" mdbInput readonly>
+                        <label>Date</label>
+                    </div>
+                    <div class="md-form mb-5">
+                        <mdb-icon fas icon="clock" class="prefix grey-text"></mdb-icon>
+                        <input type="text" class="form-control text-light" value="{{ reservation.reservation_date | date:'mediumTime' }}" mdbInput readonly>
+                        <label>Time</label>
+                    </div>
+                    <div class="md-form mb-5">
+                        <mdb-icon fas icon="atom" class="prefix grey-text"></mdb-icon>
+                        <input type="text" class="form-control text-light" value="{{ reservation.status }}" mdbInput readonly>
+                        <label>Status</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-6" *ngIf="reservation.status == 'Reserved'; else elseBlock">
+                            <button type="button" mdbBtn color="success" (click)="confirmServeModal.show();" class="waves-light d-flex justify-content-center" block="true" mdbWavesEffect>SERVE</button>
+                        </div>
+                        <ng-template #elseBlock>
+                            <div class="col-xl-6">
+                                <button type="button" mdbBtn color="primary" (click)="confirmCompleteModal.show();" class="waves-light d-flex justify-content-center" block="true" mdbWavesEffect>COMPLETE</button>
+                            </div>
+                        </ng-template>
+                        <div class="col-xl-6">
+                            <button type="button" mdbBtn color="danger" (click)="confirmServeModal.show()" class="waves-light d-flex justify-content-center" block="true" mdbWavesEffect>DELETE</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Serve reservation confirm modal -->
+<div mdbModal #confirmServeModal="mdbModal" class="modal fade left" id="confirmServeModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}">
+    <div class="modal-dialog modal-frame modal-top modal-notify modal-info" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center bg-warning">
+                Confirm to start this haircut
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="confirmServeModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <div class="row">
+                    <div class="col-xl-6">
+                        <button (click)="confirmServeModal.hide()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>CANCEL</button>
+                    </div>
+                    <div class="col-xl-6">
+                        <button (click)="startHaircut(); confirmServeModal.hide(); reservationServedNotify.show(); todayReservationModal.hide()" mdbBtn color="amber" class="waves-light" mdbWavesEffect>START</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Served notify modal -->
+<div mdbModal #reservationServedNotify="mdbModal" class="modal fade right" id="userUpdatedNotifyTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center bg-info">
+                Haircut service started
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="reservationServedNotify.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button (click)="reservationServedNotify.hide()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div mdbModal #confirmCompleteModal="mdbModal" class="modal fade left" id="confirmCompleteModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}">
+    <div class="modal-dialog modal-frame modal-top modal-notify modal-info" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center bg-warning">
+                Confirm to complete this haircut
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="confirmCompleteModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <div class="row">
+                    <div class="col-xl-6">
+                        <button (click)="confirmCompleteModal.hide()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>CANCEL</button>
+                    </div>
+                    <div class="col-xl-6">
+                        <button (click)="completeHaircut(); confirmCompleteModal.hide(); reservationServedNotify.show(); todayReservationModal.hide()" mdbBtn color="amber" class="waves-light" mdbWavesEffect>START</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div mdbModal #reservationCompletedNotify="mdbModal" class="modal fade right" id="userUpdatedNotifyTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center bg-info">
+                Haircut service completed
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="reservationCompletedNotify.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button (click)="reservationCompletedNotify.hide()" mdbBtn color="blue-grey" class="waves-light" mdbWavesEffect>OK</button>
+            </div>
+        </div>
+    </div>
+</div>

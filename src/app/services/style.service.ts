@@ -33,5 +33,5 @@ export class StyleService {
 		this.url + "/style/"+id
 	)
 }
-  
+
 }

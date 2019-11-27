@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/salon',{useNewUrlParser:true});
+mongoose.connect('mongodb://localhost:27017/salon',{useNewUrlParser:true, useUnifiedTopology: true});
 
 const Style = mongoose.model('Style',{
 
@@ -19,7 +19,10 @@ const Style = mongoose.model('Style',{
         type: String,
         require: true
     },
-
+    count: {
+        type: Number,
+        require: true
+    }
 });
 
 module.exports = Style;

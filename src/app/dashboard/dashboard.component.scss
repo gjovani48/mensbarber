@@ -1,0 +1,35 @@
+#content{
+  margin-top: 100px;
+  padding-left: 20px;
+}
+
+.hand-on-hover {
+  color: black;
+  transition:.2s;
+}
+
+.hand-on-hover:hover {
+  cursor: pointer;
+  background-color: gray;
+  color: white;
+  transition: .2s;
+}   
+
+.bg-unique {
+background-color: #3F729B;
+}
+
+.bg-unique-dark {
+background-color: #1C2331;
+}
+.col-lg-4{
+  margin-top: 5%;
+  border-radius: 5px;
+}
+h5{
+  border-bottom: solid black 1px;
+  font-size: 25px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+
