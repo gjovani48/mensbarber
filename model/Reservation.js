@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-mongoose.connect('mongodb://localhost:27017/salon',{useNewUrlParser:true, useUnifiedTopology: true});
+//mongoose.connect('mongodb://localhost:27017/salon',{useNewUrlParser:true, useUnifiedTopology: true});
+
+mongoose.connect('mongodb+srv://admin:admin@cluster0-er17b.mongodb.net/test?retryWrites=true&w=majority
+',{useNewUrlParser:true, useUnifiedTopology: true});
 
 const Reservation = mongoose.model('Reservation',{
 
